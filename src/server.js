@@ -37,7 +37,7 @@ async function getSpotifyToken() {
 
   const data = await response.json();
   cachedToken = data.access_token;
-  tokenExpiry = now + (data.expires_in * 1000);
+  tokenExpiry = now + (data.expires_in * 1000); // expires_in is in seconds, convert to ms
   return cachedToken;
 }
 
