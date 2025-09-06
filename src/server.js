@@ -41,6 +41,11 @@ async function getSpotifyToken() {
   return cachedToken;
 }
 
+// Health check route
+app.get("/", (req, res) => {
+  res.send("Backend server is running!");
+});
+
 app.get("/token", async (req, res) => {
   try {
     const token = await getSpotifyToken();
