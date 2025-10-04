@@ -21,6 +21,7 @@ async function getSpotifyToken() {
     }
 
     const authString = Buffer.from(`${CLIENT_ID}:${CLIENT_SECRET}`).toString("base64");
+    // CORRECTED URL for authentication
     const response = await fetch("https://accounts.spotify.com/api/token", {
         method: "POST",
         headers: { "Authorization": `Basic ${authString}`, "Content-Type": "application/x-www-form-urlencoded" },
@@ -40,16 +41,6 @@ app.get("/", (req, res) => {
   res.send("Backend server is running!");
 });
 
-// This route is no longer needed by the app, but we can keep it for testing
-app.get("/token", async (req, res) => {
-    try {
-        const token = await getSpotifyToken();
-        res.json({ access_token: token });
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-});
-
 // Search route that the frontend will call
 app.get("/search", async (req, res) => {
     const searchTerm = req.query.q;
@@ -59,7 +50,8 @@ app.get("/search", async (req, res) => {
 
     try {
         const token = await getSpotifyToken();
-        const spotifyUrl = `https://api.spotify.com/v1/search?q=...\`;`;
+        // CORRECTED URL for searching
+        const spotifyUrl = `https://api.spotify.com/v1/search?type=track,artist,album&q=${encodeURIComponent(searchTerm)}`;
         const spotifyRes = await fetch(spotifyUrl, {
             headers: { 'Authorization': 'Bearer ' + token }
         });
@@ -77,6 +69,7 @@ app.get("/album/:albumId", async (req, res) => {
     const { albumId } = req.params;
     try {
         const token = await getSpotifyToken();
+        // CORRECTED URLs for album and tracks
         const albumUrl = `https://api.spotify.com/v1/albums/${albumId}`;
         const tracksUrl = `https://api.spotify.com/v1/albums/${albumId}/tracks?limit=50`;
 
